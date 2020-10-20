@@ -35,21 +35,24 @@ const renderer = new THREE.WebGLRenderer();
 
 
 
-
-
-
-
 let night = true;
-//________BLOOM_POSTPROCESSING________
-let renderScene = new RenderPass( scene, camera );
-                  // UnrealBloomPass( resolution, strength, radius, threshold )
-let bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 1, 0 );
 
-let composer = new EffectComposer( renderer );
+
+
+
+
+var renderScene = new RenderPass( scene, camera );
+                  // UnrealBloomPass( resolution, strength, radius, threshold )
+var bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+			bloomPass.threshold = 0;
+			bloomPass.strength = 1.5;
+			bloomPass.radius = 1;
+
+var composer = new EffectComposer( renderer );
 			composer.addPass( renderScene );
 			composer.addPass( bloomPass );
 
-// ________/BLOOM_POSTPROCESSING________
+
 
 
 
@@ -67,7 +70,7 @@ let geom = new THREE.BoxBufferGeometry(1,1,1);
 
 
 
-let mat = new THREE.MeshPhongMaterial({color:0xeb00ff,/*emissive: new THREE.Color(0xeb00ff)*/});
+let mat = new THREE.MeshPhongMaterial({color:0xeb00ff});
 let mesh = new THREE.Mesh(geom,mat);
 mesh.position.set(1,0,0);
 scene.add(mesh);
@@ -82,15 +85,8 @@ scene.add( new THREE.HemisphereLight( 0xffffbb, 0x080820, 0.2 ) );
 
 
 
-//
-// setInterval(function(){
-//   if(mat.emissiveIntensity){
-//     mat.emissiveIntensity = 0;
-//   }else{
-//     mat.emissiveIntensity = 1;
-//   }
-//
-// },200)
+
+
 
 
 
@@ -125,6 +121,7 @@ function setSizes() {
 
 
 var controls = new OrbitControls( camera, renderer.domElement );
+scene.background = new THREE.Color(0x01000a)
 
 function animate() {
 
@@ -132,9 +129,10 @@ function animate() {
           composer.render();
         }else{
           renderer.render(scene, camera);
-        };
+        }
 
         requestAnimationFrame( animate );
         controls.update();
+
 			};
 animate();
